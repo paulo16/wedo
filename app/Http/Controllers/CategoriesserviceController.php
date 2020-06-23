@@ -72,8 +72,8 @@ class CategoriesserviceController extends Controller {
      * @return Response
      */
     public function update(Request $request, $id) {
-        \Debugbar::info($request->get('id_categorie'));
-        $cat = Categoriesservice::where('id', $request->get('id_categorie'))->first();
+        \Debugbar::info($request);
+        $cat = Categoriesservice::where('id', $id)->first();
         $image = "";
         if ($request->hasFile('photo')) {
             $image = \Storage::putFile('public/uploads', $request->file('photo'), 'public');
@@ -82,7 +82,7 @@ class CategoriesserviceController extends Controller {
         $updatescat = [
             'nom' => $request->get('nom'),
             'description' => $request->get('description'),
-            'photo' => $image
+            'photo' => $image ? $image : $cat->photo ,
         ];
         $cat->update($updatescat);
         return $cat;

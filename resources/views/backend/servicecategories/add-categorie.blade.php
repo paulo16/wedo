@@ -31,7 +31,7 @@
                                 </label>
 
                                 <input class="form-control" id="description" name="description" type="text" value=""/>
-
+                               
                             </div>
                         </div>
                     </div>
@@ -39,7 +39,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="image">Mettez une Photo</label>
-                                <input class="dropify form-control"  name="image" type="file" id="image" />
+                                <input class="form-control"  name="image-update" type="file" id="image" />
+                               
                             </div>
 
                         </div>

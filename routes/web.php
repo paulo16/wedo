@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 /* * * *  Frontend * * * */
 
+Route::get('/', function () {
+    return view('frontend.index');
+})->name('frontend.home');
 
 Route::group(['prefix' => 'frontend'], function () {
-    Route::get('/', function () {
-        return view('frontend.index');
-    })->name('frontend.home');
 
     Route::get('/about', function () {
         return view('frontend.about');
@@ -44,8 +44,6 @@ Route::group(['prefix' => 'frontend'], function () {
 Auth::routes();
 
 Route::group(['prefix' => 'backend'], function () {
-
-
 
     Route::group(['prefix' => 'servicecategories'], function () {
         Route::post('/delete/{id}', 'CategoriesserviceController@delete')->name('categoriesservice.delete');

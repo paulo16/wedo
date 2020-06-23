@@ -146,8 +146,11 @@
 
 
         //////////////////// show update Catégorie ////////////////////////////////////
+        var imagenUrl = "";
         
         $(document).on('click', '.update', function () {
+            
+            
             var id = $(this).data('id');
             var url = '{{ route("categoriesservice.findinfo", ":id") }}';
             url = url.replace(':id', id);
@@ -155,11 +158,37 @@
                 url: url,
                 type: 'GET',
             }).done(function (categorie) {
+                
                 console.log(categorie.description);
+                /**
+                if($('#image').hasClass('dropify')){
+                    $('.dropify-clear').click();
+                    $('#image').attr("data-default-file", "/storage/"+categorie.photo);
+                }else{
+                    $('#image').addClass('dropify');
+                    $('#image').attr("data-default-file", "/storage/"+categorie.photo);
+                    $('.dropify').dropify()
+                }
+                 **/
+                imagenUrl= "/storage/"+categorie.photo;
+
+                //Permet de vider l'élement dropify 
+                // car celui a tendance a garder son contenu
+                var drEvent = $('#image').dropify(
+                {
+                  defaultFile: imagenUrl
+                });
+                drEvent = drEvent.data('dropify');
+                drEvent.resetPreview();
+                drEvent.clearElement();
+                drEvent.settings.defaultFile = imagenUrl;
+                drEvent.destroy();
+                drEvent.init();
+                 
                 $('#id-categorie').val(categorie.id);
                 $('#nom').val(categorie.nom);
                 $('#description').val(categorie.description);
-                $('#image').val();
+;
                 $('#sousmettre-categorie').val("update");
                 $('#modal-categorie').modal('show');
             }).error(function () {
@@ -167,7 +196,7 @@
             });
         });
         
-        //////////////////// show update Catégorie ////////////////////////////////////
+        //////////////////// create and update Catégorie ////////////////////////////////////
         
          $("#sousmettre-categorie").click(function (e) {
                 $.ajaxSetup({
@@ -180,21 +209,27 @@
                 var formData = new FormData();
                         
                 formData.append('id_categorie',$('#id-categorie').val());
-                formData.append('photo', $('#image')[0].files[0]);
+                if (typeof $('#image')[0].files[0] !== "undefined") {
+                   formData.append('photo', $('#image')[0].files[0]);
+                }
                 formData.append('nom', $('#nom').val());
                 formData.append('description', $('#description').val());
 
+
                 var state = $('#sousmettre-categorie').val();
                 var categorie_id = $('#id-categorie').val();
-                console.log($('#id-categorie').val());
+                console.log(formData.getAll('photo'));
                 var type = "POST"; //for creating new resource
                 var url = '{{ route("categoriesservice.store") }}';
                 if (state == "update") {
                     url = '{{ route("categoriesservice.update",':id') }}';
                     url = url.replace(':id', categorie_id);
-                    type = "PUT"; //for updating existing resource
+                    //type = "PUT"; //for updating existing resource
+                    //console.log(formData.getAll('photo'));
+                    formData.append('_method', 'PUT');
                 }
-                 console.log(formData);
+                 //console.log(formData.getAll('photo'));
+                 //console.log(formData.getAll('id_categorie'));
                 $.ajax({
                     type: type,
                     url: url,
@@ -221,6 +256,24 @@
             
             /////////////////// click add categorie //////////////////////////////
             $('#add-categorie').click(function () {
+                
+                //Permet de vider l'élement dropify 
+                // car celui a tendance a garder son contenu
+                if($('#image').hasClass('dropify')){
+                    $(".dropify-clear").trigger("click");
+                }else{
+                    var drEvent = $('#image').dropify(
+                    {
+                      defaultFile: ""
+                    });
+                    drEvent = drEvent.data('dropify');
+                    drEvent.resetPreview();
+                    drEvent.clearElement();
+                    drEvent.settings.defaultFile = "";
+                    drEvent.destroy();
+                    drEvent.init();
+                    }
+                
                 $('#sousmettre-categorie').val("add");
                 $('#form-categorie').trigger("reset");
                 $('#modal-categorie').modal('show');
