@@ -14,6 +14,7 @@ class CreateProvidersTable extends Migration {
             $table->string('nom_gerant')->nullable();
             $table->string('prenom_gerant')->nullable();
             $table->string('adresse_gerant')->nullable();
+            $table->boolean('afficher')->nullable();
             $table->string('fax')->nullable();
             $table->string('comptebank')->nullable();
             $table->string('telephone')->nullable();

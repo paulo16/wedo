@@ -12,6 +12,7 @@ class CreateCustomersTable extends Migration {
             $table->string('prenom')->nullable();
             $table->string('adresse')->nullable();
             $table->string('telephone')->nullable();
+            $table->boolean('afficher')->nullable();
             $table->string('fax')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();

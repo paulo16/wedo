@@ -45,7 +45,8 @@ Auth::routes();
 
 Route::group(['prefix' => 'backend'], function () {
 
-    Route::group(['prefix' => 'servicecategories'], function () {
+    Route::group(['prefix' => 'categories'], function () {
+        Route::post('/descactiver/{id}', 'CategoriesserviceController@desactiver')->name('categoriesservice.desactiver');
         Route::post('/delete/{id}', 'CategoriesserviceController@delete')->name('categoriesservice.delete');
         Route::get('/data', 'CategoriesserviceController@data')->name('categoriesservice.data');
         Route::get('/info/{id}', 'CategoriesserviceController@findinfo')->name('categoriesservice.findinfo');

@@ -13,6 +13,7 @@ class CreateServicesTable extends Migration {
             $table->string('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('code')->nullable();
+            $table->boolean('afficher')->nullable();
             $table->string('facebook_url')->nullable();
             $table->string('google_url')->nullable();
             $table->string('linkedin_url')->nullable();

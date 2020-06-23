@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Categoriesservice;
+use App\Service;
 
 class CategoriesserviceController extends Controller {
 
@@ -34,12 +35,13 @@ class CategoriesserviceController extends Controller {
      */
     public function store(Request $request) {
         \Debugbar::info($request);
-         $image = "";
+        $image = "";
         if ($request->hasFile('photo')) {
             $image = \Storage::putFile('public/uploads', $request->file('photo'), 'public');
         }
         return Categoriesservice::create([
                     'nom' => $request->get('nom'),
+                    'afficher' => true,
                     'description' => $request->get('description'),
                     'photo' => $image
         ]);
@@ -82,7 +84,7 @@ class CategoriesserviceController extends Controller {
         $updatescat = [
             'nom' => $request->get('nom'),
             'description' => $request->get('description'),
-            'photo' => $image ? $image : $cat->photo ,
+            'photo' => $image ? $image : $cat->photo,
         ];
         $cat->update($updatescat);
         return $cat;
@@ -106,13 +108,26 @@ class CategoriesserviceController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $cat = Categoriesservice::find($id);
-        return $cat->delete();
+
+        $nbreRelation = Service::leftJoin('categoriesservices',
+                        'service.categoriesservice_id', '=',
+                        'categoriesservices.id')
+                ->where('categoriesservice_id', $id)
+                ->count();
+
+        Debugbar::info($nbreRelation);
+
+        if ($nbreRelation != 0) {
+            return "impossible";
+        } else {
+            $cat = Categoriesservice::find($id);
+            return $cat->delete();
+        }
     }
 
     public function data(Request $request) {
         $categoriesservices = \DB::table('categoriesservices')->select([
-            'categoriesservices.id as id', 'categoriesservices.nom as nom', 'categoriesservices.photo as photo', 'categoriesservices.description as description', 'categoriesservices.created_at as created_at'
+            'categoriesservices.id as id', 'categoriesservices.nom as nom','categoriesservices.afficher as afficher', 'categoriesservices.photo as photo', 'categoriesservices.description as description', 'categoriesservices.created_at as created_at'
         ]);
 
         $datatables = DataTables::of($categoriesservices)
@@ -126,8 +141,14 @@ class CategoriesserviceController extends Controller {
                     $action = '<div class="hidden-sm hidden-xs action-buttons">&nbsp;' . $edit . '&nbsp;' . $del . '</div>';
                     return $action;
                 })->editColumn('photo', function ($model) {
-                    $image= url('/storage/'.$model->photo);
-                    return $model->photo ?  $image : '';
+                    $image = url('/storage/' . $model->photo);
+                    return $model->photo ? $image : '';
+                })->editColumn('afficher', function ($model) {
+
+                    $val = $model->afficher ? "Oui" : "Non";
+                    //$afficher = '<a data-id=":id" class="badge badge-success desactiver">' . $val . '</a>';
+                    //$aff = str_replace(":id", $model->id, $afficher);
+                    return $val;
                 })
                 ->editColumn('created_at', function ($model) {
             return $model->created_at ? with(new Carbon($model->created_at))->format('d/m/Y') : '';
@@ -150,6 +171,17 @@ class CategoriesserviceController extends Controller {
 
     public function findinfo($id) {
         $cat = Categoriesservice::find($id);
+
+        return response()->json($cat);
+    }
+
+    public function desactiver($id) {
+        $cat = Categoriesservice::find($id);
+
+        $updatescat = [
+            'afficher' => !$cat->afficher,
+        ];
+        $cat->update($updatescat);
 
         return response()->json($cat);
     }

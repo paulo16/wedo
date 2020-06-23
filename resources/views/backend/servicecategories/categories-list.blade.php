@@ -45,6 +45,7 @@
                             <th>Category Name</th>
                             <th>Description</th>
                             <th>Date creation</th>
+                            <th>Activer</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -96,13 +97,23 @@
                     buttons: ['csv', 'excel', 'pdf'],
                     columns: [
                         { data: 'photo', name: 'photo',
-                                render: function( data, type, full, meta ) {
+                                render: function( data, type, row, meta ) {
                                     return "<img src=" + data + " height=\"50\"/>";
                                 }
                          },
                         {data: 'nom', name: 'nom'},
                         {data: 'description', name: 'description'},
                         {data: 'created_at', name: 'created_at'},
+                        {data: 'afficher', name: 'afficher',
+                                render: function( data, type, row, meta ) {
+                                    if(data =="Oui"){
+                                       return '<a id="'+row.id+'"  class="badge badge-success desactiver"><b>' +data+'</b></a>';
+                                    }else{
+                                       return '<a id="'+row.id+'"  class="badge badge-info desactiver"><b>' +data+'</b></a>';
+                                    }
+
+                                }
+                         },
                         {data: 'action', name: 'action'}
                     ],
                 });
@@ -277,6 +288,40 @@
                 $('#sousmettre-categorie').val("add");
                 $('#form-categorie').trigger("reset");
                 $('#modal-categorie').modal('show');
+            });
+            
+            
+            /////////////////// Désactiver une catégorie //////////////////////////////
+             $(document).on('click', '.desactiver', function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                 
+                var categorie_id = $(this).attr("id");
+                var formData = new FormData();
+                        
+                formData.append('id_categorie',$('#id-categorie').val());
+                
+                url = '{{ route("categoriesservice.desactiver",':id') }}';
+                url = url.replace(':id', categorie_id);
+                type = "POST"; //for updating existing resource
+                //console.log(formData.getAll('photo'));
+                
+                 //console.log(formData.getAll('photo'));
+                 //console.log(formData.getAll('id_categorie'));
+                $.ajax({
+                    type: type,
+                    url: url,
+                    data: formData,
+                    contentType: false,
+                    processData: false
+                }).done(function (categorie) {
+                    table.ajax.reload(null, false);
+                }).error(function () {
+                    swal("{{Lang::get('contenu.admin.oops')}}", "{{Lang::get('contenu.admin.problem_server')}}", "error");
+                });
             });
 
 
