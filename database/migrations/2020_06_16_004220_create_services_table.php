@@ -25,6 +25,7 @@ class CreateServicesTable extends Migration {
             $table->string('envato_url')->nullable();
             $table->string('video_url')->nullable();
             $table->unsignedInteger('categoriesservice_id')->nullable();
+            $table->unsignedInteger('ville_id')->nullable();
 
             $table->timestamps();
         });
@@ -35,13 +36,20 @@ class CreateServicesTable extends Migration {
                     ->onDelete('cascade')
                     ->onUpdate('cascade');
         });
+
+        Schema::table('services', function (Blueprint $table) {
+            $table->foreign('ville_id')->references('id')
+                    ->on('villes')
+                    ->onDelete('cascade')
+                    ->onUpdate('cascade');
+        });
     }
 
-    
     public function down() {
 
         Schema::table('services', function (Blueprint $table) {
             $table->dropForeign(['categoriesservice_id']);
+            $table->dropForeign(['ville_id']);
         });
         Schema::dropIfExists('services');
     }

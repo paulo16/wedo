@@ -11,7 +11,9 @@ class CreateOffresTable extends Migration {
             $table->increments('id');
             $table->string('titre')->nullable();
             $table->string('description')->nullable();
-            $table->string('prix')->nullable();
+            $table->integer('prix')->nullable();
+            $table->integer('reduction')->nullable();
+            $table->boolean('afficher')->nullable();
             $table->string('code')->nullable();
             $table->unsignedInteger('service_id')->nullable();
 

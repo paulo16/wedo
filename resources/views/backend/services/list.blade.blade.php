@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="listings" role="tabpanel" aria-labelledby="v-pills-listings-tab">
+<div class="tab-pane fade">
     <!-- All Listing -->
     <div class="tr-single-box">
 

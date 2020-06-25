@@ -60,6 +60,10 @@ Route::group(['prefix' => 'backend'], function () {
         Route::resource('user', 'UserController');
     });
 
+    Route::group(['prefix' => 'les-services'], function () {
+        Route::resource('service', 'ServiceController');
+    });
+
     Route::get('/', function () {
         return view('backend.dashbord.index');
     })->name('backend-home');
@@ -70,7 +74,6 @@ Route::group(['prefix' => 'backend'], function () {
 
 Route::resource('customer', 'CustomerController');
 Route::resource('provider', 'ProviderController');
-Route::resource('service', 'ServiceController');
 Route::resource('devis', 'DevisController');
 Route::resource('ville', 'VilleController');
 
