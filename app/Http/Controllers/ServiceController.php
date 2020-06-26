@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
 use App\Tag;
 use App\Service;
 use App\Ville;
 use App\Categoriesservice;
 use App\Offre;
 use App\HeureService;
+use App\Commande;
 
 class ServiceController extends Controller {
 
@@ -18,7 +21,7 @@ class ServiceController extends Controller {
      * @return Response
      */
     public function index() {
-        return view("backend.services.add-service");
+        return view("backend.services.list-service");
     }
 
     /**
@@ -178,6 +181,10 @@ class ServiceController extends Controller {
         return redirect()->back();
     }
 
+    public function delete(Request $request, $id) {
+        return response()->json($this->destroy($id));
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -185,7 +192,81 @@ class ServiceController extends Controller {
      * @return Response
      */
     public function destroy($id) {
-        
+        $nbreRelation = Commande::leftJoin('services',
+                        'services.id', '=',
+                        'commandes.service_id')
+                ->where('service_id', $id)
+                ->count();
+
+        \Debugbar::info($nbreRelation);
+
+        if ($nbreRelation != 0) {
+            return "impossible";
+        } else {
+            $cat = Service::find($id);
+            return $cat->delete();
+        }
+    }
+
+    public function data(Request $request) {
+        $services = \DB::table('services')->select([
+            'services.id as id', 'services.titre as titre', 'services.afficher as afficher', 'services.logo as logo', 'services.description as description', 'services.created_at as created_at'
+        ]);
+
+        $datatables = DataTables::of($services)
+                ->addColumn('action', function ($model) {
+                    $edit = route('service.edit',$model->id);
+                    $url_edit = '<a href=":url" class="green update" ><i class="ace-icon fa fa-pencil bigger-130"></i></a>';
+                    $delete = '<a data-id=":id" class="red delete"><i class="ace-icon fa fa-trash-o bigger-130 "></i></a>';
+                    $edit = str_replace(":url",$edit,$url_edit);
+                    $del = str_replace(":id", $model->id, $delete);
+                    //$url_edit = str_replace(":id", $edit, $url_edit);
+                    $action = '<div class="hidden-sm hidden-xs action-buttons">&nbsp;' . $edit . '&nbsp;' . $del . '</div>';
+                    return $action;
+                })->editColumn('logo', function ($model) {
+                    $image = url('/storage/' . $model->logo);
+                    return $model->logo ? $image : '';
+                })->editColumn('afficher', function ($model) {
+
+                    $val = $model->afficher ? "Oui" : "Non";
+                    //$afficher = '<a data-id=":id" class="badge badge-success desactiver">' . $val . '</a>';
+                    //$aff = str_replace(":id", $model->id, $afficher);
+                    return $val;
+                })
+                ->editColumn('created_at', function ($model) {
+            return $model->created_at ? with(new Carbon($model->created_at))->format('d/m/Y') : '';
+        });
+        // les filtres 
+        // Global search function
+        if ($keyword = $request->get('search')['value']) {
+            //Debugbar::info($keyword);
+            // override services.name global search
+            $datatables->filterColumn('titre', function ($query, $keyword) {
+                $query->where('services.titre', 'like', "%" . $keyword . "%");
+            });
+
+            $datatables->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            });
+        }
+        return $datatables->make(true);
+    }
+
+    public function findinfo($id) {
+        $cat = Service::find($id);
+
+        return response()->json($cat);
+    }
+
+    public function desactiver($id) {
+        $cat = Service::find($id);
+
+        $updatescat = [
+            'afficher' => !$cat->afficher,
+        ];
+        $cat->update($updatescat);
+
+        return response()->json($cat);
     }
 
     //Permet de créer des tags dynamiquement après les avoir crées au niveau du formulaire en utilisant select2
@@ -225,12 +306,12 @@ class ServiceController extends Controller {
             //dd($reductions);
             $taille = count($nomoffres);
             /**
-            if (count($reductions) < $taille) {
-                $c = count($reductions) - 1;
-                for ($i = $c; $i < $taille; $i++) {
-                    array_push($reductions, 0);
-                }
-            }**/
+              if (count($reductions) < $taille) {
+              $c = count($reductions) - 1;
+              for ($i = $c; $i < $taille; $i++) {
+              array_push($reductions, 0);
+              }
+              }* */
             //dd($reductions);
             if (!$request->isMethod('post')) {
                 //id offres from form
@@ -299,7 +380,7 @@ class ServiceController extends Controller {
             if (!$request->isMethod('post')) {
                 for ($i = 0; $i < $taille; $i++) {
                     HeureService::updateOrCreate(
-                            [   'jour_id' => $jours[$i],
+                            ['jour_id' => $jours[$i],
                                 'service_id' => $service->id,
                                 'heureouverture_id' => $heureouvertures[$i],
                                 'heurefermeture_id' => $heurefermetures[$i]

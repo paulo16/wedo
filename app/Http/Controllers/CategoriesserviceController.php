@@ -8,6 +8,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Categoriesservice;
 use App\Service;
 
+
 class CategoriesserviceController extends Controller {
 
     /**

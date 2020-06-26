@@ -61,6 +61,10 @@ Route::group(['prefix' => 'backend'], function () {
     });
 
     Route::group(['prefix' => 'les-services'], function () {
+        Route::post('/descactiver/{id}', 'ServiceController@desactiver')->name('service.desactiver');
+        Route::post('/delete/{id}', 'ServiceController@delete')->name('service.delete');
+        Route::get('/data', 'ServiceController@data')->name('service.data');
+        Route::get('/info/{id}', 'ServiceController@findinfo')->name('service.findinfo');
         Route::resource('service', 'ServiceController');
     });
 

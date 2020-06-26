@@ -13,7 +13,7 @@
     <div class="nav flex-column nav-pills"  aria-orientation="vertical">
         <a class="nav-link active" href="{{route('backend-home')}}" role="tab" aria-controls="dashboard" aria-selected="true"><i class="ti-dashboard"></i>Dashboard</a>
         <a class="nav-link" href="{{route('user.index')}}" role="tab" aria-controls="profile" aria-selected="false"><i class="ti-user"></i>Profile</a>
-        <a class="nav-link" href="{{route('service.create')}}" role="tab" aria-controls="listings" aria-selected="false"><i class="ti-layers-alt"></i>Mes services</a>
+        <a class="nav-link" href="{{route('service.index')}}" role="tab" aria-controls="listings" aria-selected="false"><i class="ti-layers-alt"></i>Mes services</a>
         <a class="nav-link" href="#events" role="tab" aria-controls="events" aria-selected="false"><i class="ti-medall-alt"></i>Réservations</a>
         <a class="nav-link" href="{{route('categoriesservice.index')}}" aria-selected="false"><i class="ti-home"></i>Category</a>
         <a class="nav-link" href="#Prestataire" role="tab" aria-controls="Prestataire" aria-selected="false"><i class="ti-user"></i>Prestataire</a>
