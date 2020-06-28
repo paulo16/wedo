@@ -107,8 +107,9 @@ class UserController extends Controller {
 
     public function data(Request $request) {
         $users = \DB::table('users')->select([
-            'users.id as id', 'users.name as nom', 'users.email as email', 'users.created_at as created_at'
-        ]);
+                    'users.id as id', 'users.name as nom','roles.name as role', 'users.email as email', 'users.created_at as created_at'
+                ])->leftJoin('role_user', 'role_user.user_id', '=', 'users.id')
+                ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
 
         $datatables = DataTables::of($users)
                         ->addColumn('action', function ($model) {

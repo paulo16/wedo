@@ -10,7 +10,7 @@
     <div class="tr-single-box">
 
         <div class="tr-single-header">
-            <h4><i class="ti-share"></i>Category</h4>
+            <h4><i class="ti-share"></i>Les Services</h4>
             <div class="btn-group fl-right">
                 <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="ti-more"></i>

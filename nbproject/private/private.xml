@@ -3,14 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/laragon/www/wedo/database/seeds/HeureSeeder.php</file>
             <file>file:/E:/laragon/www/wedo/routes/web.php</file>
-            <file>file:/E:/laragon/www/wedo/resources/views/backend/servicecategories/categories-list.blade.php</file>
+            <file>file:/E:/laragon/www/wedo/resources/views/backend/devis/add-devis.blade.php</file>
             <file>file:/E:/laragon/www/wedo/resources/views/backend/services/add-service.blade.php</file>
             <file>file:/E:/laragon/www/wedo/app/Http/Controllers/ServiceController.php</file>
-            <file>file:/E:/laragon/www/wedo/app/Http/Controllers/CategoriesserviceController.php</file>
             <file>file:/E:/laragon/www/wedo/resources/views/backend/layouts/sidebar.blade.php</file>
-            <file>file:/E:/laragon/www/wedo/resources/views/backend/default.blade.php</file>
         </group>
     </open-files>
 </project-private>
